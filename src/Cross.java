@@ -2,8 +2,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Cross {
-    public static int SIZE = 3;
-    public static int DOTS_TO_WIN = 3;
+    public static int SIZE = 5;
+    public static int DOTS_TO_WIN = 4;
     public static final char DOT_EMPTY = '.';
     public static final char DOT_X = 'X';
     public static final char DOT_O = 'O';
@@ -40,32 +40,7 @@ public class Cross {
         System.out.println("Игра закончена");
 
     }
-    public static void humanTurn() {
-        int x, y;
-        do {
-            System.out.println("Введите координаты X Y");
-            x = sc.nextInt() - 1;
-            y = sc.nextInt() - 1;
-        } while (!isCellValid(x, y));
-        map [y][x] = DOT_X;
-    }
-
-    public static boolean isCellValid(int x, int y) {
-        if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) return false;
-        if (map[y][x] == DOT_EMPTY) return true;
-        return false;
-    }
-
-    public static void aiTurn() {
-        int x, y;
-        do {
-            x = rand.nextInt(SIZE);
-            y = rand.nextInt(SIZE);
-        } while (!isCellValid(x, y));
-        System.out.println("Компьютер походил в точку" + (x +1) + " " + (y + 1));
-        map[y][x] = DOT_O;
-    }
-
+    // Отрисовка поля
     public static void initMap() {
         map = new char[SIZE][SIZE];
         for (int i = 0; i < SIZE; i++) {
@@ -90,40 +65,90 @@ public class Cross {
         System.out.println();
     }
 
-    public static boolean checkWin(char symb) {
-       if (((checkDiagonal(symb))||(checkLanes(symb))))
-       return true;
-       return false;
-
-
-    }
-
-    public static boolean checkDiagonal (char symb) {
-        boolean toright = true;
-        boolean toleft = true;
-       for (int i = 0; i < SIZE; i++) {
-           toright  &= (map[i][i] == symb);
-           toleft  &= (map[3-i-1][i]==symb);
-       }
-       if (toright||toleft) return true;
-       return false;
-    }
-
-    public static boolean checkLanes(char symb) {
-        boolean cols, rows;
-        for (int col=0; col<SIZE; col++) {
-            cols = true;
-            rows = true;
-            for (int row=0; row<SIZE; row++) {
-                cols &= (map[col][row] == symb);
-                rows &= (map[row][col] == symb);
-            }
-
-            if (cols || rows) return true;
-        }
-
+//Проверка ячейки пустая/полная
+    public static boolean isCellValid(int x, int y) {
+        if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) return false;
+        if (map[y][x] == DOT_EMPTY) return true;
         return false;
     }
+
+    public static void humanTurn() {
+        int x, y;
+        do {
+            System.out.println("Введите координаты X Y");
+            x = sc.nextInt() - 1;
+            y = sc.nextInt() - 1;
+        } while (!isCellValid(x, y));
+        map [y][x] = DOT_X;
+    }
+
+
+
+    public static void aiTurn() {
+        int x, y;
+        do {x = rand.nextInt(SIZE);
+            y = rand.nextInt(SIZE);
+        } while (!isCellValid(x, y));
+        map[y][x] = DOT_O;
+    }
+
+
+
+
+
+    public static boolean checkWin(char symb) {
+       for (int v = 0; v < SIZE; v++) {
+           for (int h = 0; h < SIZE; h++) {
+               if (h + DOTS_TO_WIN <= SIZE) {
+                   if (checkLineHorisont(v, h, symb) >= DOTS_TO_WIN) return true;
+
+              if (v - DOTS_TO_WIN > -2) {
+                  if (checkDiaUp(v, h, symb) >= DOTS_TO_WIN) return true;
+                    }
+
+               if (v + DOTS_TO_WIN <= SIZE) {
+                   if (checkDiaDown(v, h, symb) >= DOTS_TO_WIN) return true;
+               }
+           }
+           if (v + DOTS_TO_WIN <= SIZE) {
+               if (checkLineVertical(v, h, symb) >= DOTS_TO_WIN) return true;
+            }
+       }
+    }
+       return false;
+
+}
+
+    public static int checkLineHorisont(int v, int h, char symb) {
+int count = 0;
+for (int j = h; j < DOTS_TO_WIN +h; j++) {
+    if((map[v][j]==symb)) count++;
+        }
+       return count;
+    }
+public static int checkLineVertical(int v, int h, char symb) {
+        int count = 0;
+        for (int i = v; i < DOTS_TO_WIN +v; i++) {
+            if((map[i][h]==symb)) count++;
+        }
+        return count;
+       }
+public static int checkDiaUp(int v, int h, char symb) {
+        int count = 0;
+        for (int i = 0; i < DOTS_TO_WIN ; i++) {
+            if((map[v-i][h+i]==symb)) count++;
+        }
+        return count;
+       }
+public static int checkDiaDown(int v, int h, char symb) {
+        int count = 0;
+        for (int i = 0; i < DOTS_TO_WIN ; i++) {
+            if((map[i+v][i+h]==symb)) count++;
+        }
+        return count;
+    }
+
+
 
     public static boolean isMapFull() {
         for (int i = 0; i < SIZE; i++) {
