@@ -86,13 +86,25 @@ public class Cross {
 
     public static void aiTurn() {
         int x, y;
+
+        //блокировка хода человека
+        for (int v = 0; v < SIZE; v++) {
+            for (int h =0; h < SIZE; h++) {
+                if (h + DOTS_TO_WIN <= SIZE ) {
+                    if (checkLineHorisont(v, h, DOT_X) == DOTS_TO_WIN -) {
+                        if (MoveAiLineHorisont(v, h, DOT_O)) return;
+                    }
+                }
+            }
+        }
+
         do {x = rand.nextInt(SIZE);
             y = rand.nextInt(SIZE);
         } while (!isCellValid(x, y));
         map[y][x] = DOT_O;
     }
 
-
+    public static void MoveAiLineHorisont(int v, int h, DOT_O));
 
 
 
