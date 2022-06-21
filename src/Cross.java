@@ -1,7 +1,6 @@
 import java.util.Random;
 import java.util.Scanner;
 
-
 public class Cross {
     public static int SIZE = 5;
     public static int DOTS_TO_WIN = 4;
@@ -87,72 +86,15 @@ public class Cross {
 
     public static void aiTurn() {
         int x, y;
-
-        //блокировка хода человека
-        for (int v = 0; v < SIZE; v++) {
-            for (int h = 0; h < SIZE; h++) {
-                if (h + DOTS_TO_WIN <= SIZE) { // по горизонтали
-                    if (checkLineHorisont(v, h, DOT_X) == DOTS_TO_WIN - 1) {
-                        if (MoveAiLineHorisont(v, h, DOT_O)) return;
-                    }
-                    if (v - DOTS_TO_WIN > -2) { //вверх по диагонали
-                        if (checkDiaDown(v, h, DOT_X) == DOTS_TO_WIN - 1) {
-                            if (MoveAiDiaUp(v, h, DOT_O)) return;
-                        }
-                    }
-                    if (v + DOTS_TO_WIN <= SIZE) {  // Вниз по диагонали
-                        if (checkDiaDown(v, h, DOT_X) == DOTS_TO_WIN - 1) {
-                            if (MoveAiDiaDown(v, h, DOT_O)) return;
-                        }
-                    }
-                }
-            }
-        }
-
         do {x = rand.nextInt(SIZE);
             y = rand.nextInt(SIZE);
         } while (!isCellValid(x, y));
         map[y][x] = DOT_O;
     }
 
-    private static boolean MoveAiLineHorisont(int v, int h, char DOT_O) {
-     for (int j = h; j < DOTS_TO_WIN; j ++) {
-         if ((map[v][j] == DOT_EMPTY)) {
-             map[v][j] = DOT_O;
-             return true;
-         }
-     }
-     return false;
-    }
-    private static boolean MoveAiVertical(int v, int h, char DOT_O) {
-        for (int i = v; i < DOTS_TO_WIN; i++) {
-            if ((map[i][h] == DOT_EMPTY)) {
-                map[i][h] = DOT_O;
-                return true;
-            }
-        }
-        return  false;
-    }
 
-    private static boolean MoveAiDiaDown(int v, int h, char DOT_O) {
-        for (int i = v; i < DOTS_TO_WIN; i++) {
-            if ((map[i+v][i+h] == DOT_EMPTY)) {
-                map[i+v][i+h] = DOT_O;
-                return true;
-            }
-        }
-        return  false;
-    }
 
-    private static boolean MoveAiDiaUp(int v, int h, char DOT_O) {
-        for (int i = v; i < DOTS_TO_WIN; i++) {
-            if ((map[v-i][h+i] == DOT_EMPTY)) {
-                map[v-i][h+i] = DOT_O;
-                return true;
-            }
-        }
-        return  false;
-    }
+
 
     public static boolean checkWin(char symb) {
        for (int v = 0; v < SIZE; v++) {
@@ -198,16 +140,14 @@ public static int checkDiaUp(int v, int h, char symb) {
         }
         return count;
        }
-    private static int checkDiaDown(int v, int h, char symb) {
-
-
+public static int checkDiaDown(int v, int h, char symb) {
         int count = 0;
         for (int i = 0; i < DOTS_TO_WIN ; i++) {
-            if((map[v][h]==symb)) count++;
+            if((map[i+v][i+h]==symb)) count++;
         }
         return count;
-
     }
+
 
 
     public static boolean isMapFull() {
